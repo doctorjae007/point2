@@ -105,7 +105,7 @@ function App() {
     gainNode.connect(audioContext.destination);
     
     // ตั้งค่าเสียง
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // โน๊ตสูง
+    oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // โน๊ตสูง
     oscillator.type = 'sine';
     
     // ความดัง
