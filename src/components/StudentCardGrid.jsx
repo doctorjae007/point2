@@ -95,17 +95,32 @@ function App() {
   }, [students]);
 
   const playDingSound = () => {
-    if (dingSound.current) {
-      try {
-        dingSound.current.currentTime = 0;
-        dingSound.current.play().catch(error => {
-          console.warn("ไม่สามารถเล่นเสียงได้:", error);
-        });
-      } catch (error) {
-        console.warn("เกิดข้อผิดพลาดในการเล่นเสียง:", error);
-      }
-    }
-  };
+  try {
+    // สร้างเสียง beep ด้วย Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // ตั้งค่าเสียง
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // โน๊ตสูง
+    oscillator.type = 'sine';
+    
+    // ความดัง
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    // เล่นเสียง
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
+    
+    console.log("🔊 เล่นเสียง beep!");
+  } catch (error) {
+    console.log("ไม่สามารถเล่นเสียงได้:", error);
+  }
+};
 
   // 🚀 ฟังก์ชันเอฟเฟคพลุวิ่งขึ้นบน - สีเหลืองครอบคลุมจอ
   const fireConfetti = (score) => {
